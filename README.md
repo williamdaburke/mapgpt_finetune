@@ -11,9 +11,8 @@ This project fine-tunes a multilingual DistilBERT model for intent classificatio
 - Cleans text by removing numbers and replacing named entities using spaCy language models.
 - Uses Hugging Face Transformers and PyTorch for model training.
 - Implements custom dataset class for efficient data handling.
-- Evaluates model with accuracy and macro F1-score metrics.
+- Evaluates model with accuracy and weighted F1-score metrics.
 - Saves fine-tuned model and tokenizer for later use.
-- Supports resuming training from latest checkpoint.
 
 ---
 
@@ -40,3 +39,9 @@ See [`setup.sh`](setup.sh) for an automated setup script.
 
    ```bash
    ./setup.sh
+
+## Run
+
+1. To log run to Weights & Biases, set environment variable `WANDB_API_KEY`.
+2. To run the script locally: `python main.py`
+3. To run the script in a notebook use `run.ipynb`. This allows the ability to run in a free GPU environment such a Google Colab or Kaggle if GPUs are not available locally.
