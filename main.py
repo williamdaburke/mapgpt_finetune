@@ -18,6 +18,10 @@ from transformers import (
     TrainingArguments
 )
 
+if os.getenv("WANDB_API_KEY") is not None:
+    import wandb
+    wandb.login(key=os.getenv("WANDB_API_KEY"))
+
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 def load_data(parquet_path='data.parquet'):
@@ -92,7 +96,7 @@ def compute_metrics(eval_pred):
     labels = eval_pred.label_ids
     return {
         'accuracy': accuracy_score(labels, preds),
-        'f1_macro': f1_score(labels, preds, average='macro')
+        'f1_weighted': f1_score(labels, preds, average="weighted")
     }
 
 def main():
@@ -158,7 +162,8 @@ def main():
         logging_steps=10,
         save_strategy="epoch",
         load_best_model_at_end=True,
-        metric_for_best_model="accuracy"
+        metric_for_best_model="f1_weighted",
+        report_to=["wandb"] if os.getenv("WANDB_API_KEY") else []
     )
 
     print("Beginning training...")
@@ -176,17 +181,12 @@ def main():
     metrics = trainer.evaluate()
     print("Final evaluation metrics:", metrics)
 
-    if os.path.exists('./results/'):
-        import shutil
-        print("Cleaning old results...")
-        shutil.rmtree('./results/')
-
     print("Saving model and tokenizer...")
     model.save_pretrained("./intent_classifier_distilbert")
     tokenizer.save_pretrained("./intent_classifier_distilbert")
     trainer.save_model("./intent_classifier_distilbert_model")
 
-    print("Done.")
+    print("Run finished")
 
 if __name__ == "__main__":
     main()
