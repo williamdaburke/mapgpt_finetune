@@ -28,6 +28,14 @@ def load_data(parquet_path='data.parquet'):
     print("Loading data from:", parquet_path)
     df_raw = pd.read_parquet(parquet_path, engine='pyarrow')
     print(f"Loaded {len(df_raw)} rows.")
+    # Print count per label
+    print("Count per label:")
+    for label, count in df_raw['label'].value_counts().items():
+        print(f"  {label}: {count}")
+    # Print count per label
+    print("Count per language:")
+    for label, count in df_raw['language'].value_counts().items():
+        print(f"  {label}: {count}")
     return df_raw
 
 def combine_context(row):
@@ -39,7 +47,6 @@ def prepare_labels(df):
     label2id = {label: idx for idx, label in enumerate(df['label'].unique())}
     id2label = {v: k for k, v in label2id.items()}
     df['label_id'] = df['label'].map(label2id)
-    print(f"Found {len(label2id)} unique labels.")
     return label2id, id2label
 
 def load_spacy_models():
