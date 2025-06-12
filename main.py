@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-finetune model for mapgpt
+finetune model
 """
 
 import os
